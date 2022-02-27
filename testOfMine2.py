@@ -86,7 +86,7 @@ while True:
             wish_price = get_target_price2("KRW-BTC", 0.2)
         print("매수목표가격 : " + str(wish_price) )
 
-        get_sell_price()
+        get_sell_price("KRW-BTC")
         print("==========================================")
 
         #장 시작 직후
