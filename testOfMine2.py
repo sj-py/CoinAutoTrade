@@ -18,8 +18,8 @@ def get_target_price2(ticker, k):
     return target_price2
 
 def get_sell_price(ticker):
-    target_price = get_target_price(ticker)
-    target_price2 = get_target_price2(ticker)
+    target_price = get_target_price(ticker, 0.6)
+    target_price2 = get_target_price2(ticker, 0.2)
     start_time = get_start_time(ticker)
 
     if start_time < now < start_time + datetime.timedelta(hours=6):
@@ -28,7 +28,7 @@ def get_sell_price(ticker):
 
     else:
         plus_sell_price = target_price2 + (target_price2 * 0.01)
-        minus_sell_price = target_price2 + (target_price2 * 0.05)
+        minus_sell_price = target_price2 - (target_price2 * 0.05)
 
     print("이익 목표치 : " + str(plus_sell_price))
     print("손해 방어치 : " + str(minus_sell_price))
