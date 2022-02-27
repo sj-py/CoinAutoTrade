@@ -17,9 +17,19 @@ def get_target_price2(ticker, k):
     target_price2 = df.iloc[1]['open'] + (df.iloc[1]['high'] - df.iloc[1]['low']) * k
     return target_price2
 
-def get_sell_price():
-    plus_sell_price = target_price + (target_price * 0.01)
-    minus_sell_price = target_price + (target_price * 0.05)
+def get_sell_price(ticker):
+    target_price = get_target_price(ticker)
+    target_price2 = get_target_price2(ticker)
+    start_time = get_start_time(ticker)
+
+    if start_time < now < start_time + datetime.timedelta(hours=6):
+        plus_sell_price = target_price + (target_price * 0.01)
+        minus_sell_price = target_price + (target_price * 0.05)
+
+    else:
+        plus_sell_price = target_price2 + (target_price2 * 0.01)
+        minus_sell_price = target_price2 + (target_price2 * 0.05)
+
     print("이익 목표치 : " + str(plus_sell_price))
     print("손해 방어치 : " + str(minus_sell_price))
     return 0
