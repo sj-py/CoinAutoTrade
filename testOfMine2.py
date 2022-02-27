@@ -6,25 +6,33 @@ access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
 secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
 
 def get_target_price(ticker, k):
-    """변동성 돌파 전략으로 매수 목표가 조회"""
+    #"""변동성 돌파 전략으로 매수 목표가 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
     target_price = df.iloc[1]['open'] + (df.iloc[0]['high'] - df.iloc[0]['low']) * k
     return target_price
 
 def get_target_price2(ticker, k):
-    """변동성 돌파 전략으로 매수 목표가 조회"""
+    #"""변동성 돌파 전략으로 매수 목표가 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
     target_price2 = df.iloc[1]['open'] + (df.iloc[1]['high'] - df.iloc[1]['low']) * k
     return target_price2
 
+def get_sell_price():
+    plus_sell_price = target_price + (target_price * 0.01)
+    minus_sell_price = target_price + (target_price * 0.05)
+    print("이익 목표치 : " + str(plus_sell_price))
+    print("손해 방어치 : " + str(minus_sell_price))
+    return 0
+
+
 def get_start_time(ticker):
-    """시작 시간 조회"""
+    #"""시작 시간 조회"""
     df = pyupbit.get_ohlcv(ticker, interval="day", count=1)
     start_time = df.index[0]
     return start_time
 
 def get_balance(ticker):
-    """잔고 조회"""
+    #"""잔고 조회"""
     balances = upbit.get_balances()
     for b in balances:
         if b['currency'] == ticker:
@@ -35,7 +43,7 @@ def get_balance(ticker):
     return 0
 
 def get_current_price(ticker):
-    """현재가 조회"""
+    #"""현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
 # 로그인
@@ -66,11 +74,13 @@ while True:
             wish_price = get_target_price("KRW-BTC", 0.6)
         if start_time - datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
             wish_price = get_target_price2("KRW-BTC", 0.2)
-        print("목표가격 : " + str(wish_price) )
+        print("매수목표가격 : " + str(wish_price) )
+
+        get_sell_price()
         print("==========================================")
 
         #장 시작 직후
-        if start_time < now < start_time - datetime.timedelta(hours=6):
+        if start_time < now < start_time + datetime.timedelta(hours=6):
             target_price = get_target_price("KRW-BTC", 0.6)
             current_price = get_current_price("KRW-BTC")
             if target_price < current_price:
@@ -84,7 +94,7 @@ while True:
                             print("Sell : " + current_price)
                             upbit.sell_market_order("KRW-BTC", btc*0.9995)
         #장 시작 6시간 후
-        if start_time - datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
+        if start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
             target_price2 = get_target_price2("KRW-BTC", 0.2)
             current_price = get_current_price("KRW-BTC")
             if target_price2 < current_price:
