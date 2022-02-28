@@ -27,8 +27,8 @@ def get_sell_price(ticker):
         minus_sell_price = target_price + (target_price * 0.05)
 
     else:
-        plus_sell_price = target_price2 + (target_price2 * 0.01)
-        minus_sell_price = target_price2 - (target_price2 * 0.05)
+        plus_sell_price = target_price2 + (target_price2 * 0.005)
+        minus_sell_price = target_price2 - (target_price2 * 0.0045)
 
     print("이익 목표치 : " + str(plus_sell_price))
     print("손해 방어치 : " + str(minus_sell_price))
@@ -97,26 +97,29 @@ while True:
                 krw = get_balance("KRW")
                 if krw > 5000:
                     upbit.buy_market_order("KRW-BTC", krw*0.9995)
-                    print("Buy : " + target_price)
-                    if ((current_price-target_price)/target_price) >= 0.01 or ((current_price-target_price)/target_price) <= -0.05:
-                        btc = get_balance("BTC")
-                        if btc > 0.00008:
-                            print("Sell : " + current_price)
-                            upbit.sell_market_order("KRW-BTC", btc*0.9995)
+                    print("Buy : " + str(target_price))
+            if ((current_price-target_price)/target_price) >= 0.01 or ((current_price-target_price)/target_price) <= -0.05:
+                btc = get_balance("BTC")
+                if btc > 0.00008:
+                    print("Sell : " + str(current_price))
+                    upbit.sell_market_order("KRW-BTC", btc*0.9995)
         #장 시작 6시간 후
-        if start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
+        elif start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
+            
             target_price2 = get_target_price2("KRW-BTC", 0.2)
             current_price = get_current_price("KRW-BTC")
             if target_price2 < current_price:
                 krw = get_balance("KRW")
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-BTC", krw*0.9995)
-                    print("Buy : " + target_price2)
-                    if ((current_price-target_price2)/target_price2) >= 0.01 or ((current_price-target_price2)/target_price2) <= -0.05:
-                        btc = get_balance("BTC")
-                        if btc > 0.00008:
-                            print("Sell : " + current_price)
-                            upbit.sell_market_order("KRW-BTC", btc*0.9995) 
+                    if current_price <= target_price2 + (target_price2*0.0002):
+                        upbit.buy_market_order("KRW-BTC", krw*0.9995)
+                        print("Buy : " + str(target_price2))
+            if ((current_price-target_price2)/target_price2) >= 0.005 or ((current_price-target_price2)/target_price2) <= -0.0045:
+                
+                btc = get_balance("BTC")
+                if btc > 0.00008:
+                    print("Sell : " + str(current_price))
+                    upbit.sell_market_order("KRW-BTC", btc*0.9995) 
 
         else:
             btc = get_balance("BTC")
