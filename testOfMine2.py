@@ -114,7 +114,7 @@ while True:
                     if current_price <= target_price2 + (target_price2*0.0002):
                         upbit.buy_market_order("KRW-BTC", krw*0.9995)
                         print("Buy : " + str(target_price2))
-            if ((current_price-target_price2)/target_price2) >= 0.005 or ((current_price-target_price2)/target_price2) <= -0.0045:
+            if ((current_price-target_price2)/target_price2) >= 0.01 or ((current_price-target_price2)/target_price2) <= -0.0045:
                 
                 btc = get_balance("BTC")
                 if btc > 0.00008:
