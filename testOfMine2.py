@@ -105,7 +105,7 @@ while True:
                     upbit.sell_market_order("KRW-BTC", btc*0.9995)
         #장 시작 6시간 후
         elif start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
-            
+            #
             target_price2 = get_target_price2("KRW-BTC", 0.2)
             current_price = get_current_price("KRW-BTC")
             if target_price2 < current_price:
