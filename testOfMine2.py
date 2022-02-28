@@ -13,7 +13,7 @@ def get_target_price(ticker, k):
 
 def get_target_price2(ticker, k):
     #"""변동성 돌파 전략으로 매수 목표가 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
+    df = pyupbit.get_ohlcv(ticker, interval="minute", count=2)
     target_price2 = df.iloc[1]['open'] + (df.iloc[1]['high'] - df.iloc[1]['low']) * k
     return target_price2
 
