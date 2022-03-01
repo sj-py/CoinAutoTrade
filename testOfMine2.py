@@ -23,12 +23,13 @@ def get_sell_price(ticker):
     start_time = get_start_time(ticker)
 
     if start_time < now < start_time + datetime.timedelta(hours=6):
+        #print("qwqw")
         plus_sell_price = target_price + (target_price * 0.01)
         minus_sell_price = target_price - (target_price * 0.05)
 
     else:
-        plus_sell_price = target_price2 + (target_price2 * 0.005)
-        minus_sell_price = target_price2 - (target_price2 * 0.0045)
+        plus_sell_price = target_price2 + (target_price2 * 0.01)
+        minus_sell_price = target_price2 - (target_price2 * 0.008)
 
     print("이익 목표치 : " + str(plus_sell_price))
     print("손해 방어치 : " + str(minus_sell_price))
@@ -80,10 +81,12 @@ while True:
         now_price = get_current_price("KRW-BTC")
         print("현재가격 : " + str(now_price))
 
-        if start_time < now < start_time - datetime.timedelta(hours=6):
+        if start_time < now < start_time + datetime.timedelta(hours=6):
             wish_price = get_target_price("KRW-BTC", 0.6)
-        if start_time - datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
+            #print("dldl")
+        else: #start_time - datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
             wish_price = get_target_price2("KRW-BTC", 0.2)
+            #print("qwqw")
         print("매수목표가격 : " + str(wish_price) )
 
         get_sell_price("KRW-BTC")
