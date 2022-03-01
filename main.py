@@ -72,15 +72,23 @@ def get_current_price(ticker):
     #"""현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-def any_trade():
+def get_reward():
     a = 100000
     b = int(upbit.get_balance("KRW"))
+
+    for i in number_of_coins_to_trade:
+        b += get_current_price(i) * upbit.get_balance(i)
+
     c = round(((b - a) / a) * 100,3)
-    #d = "{:.2f}".format(c)
+    print("현재 수익률 : " + str(c) + "%")
+    print("==========================================")
+    return 0
+
+def any_trade():
     print(datetime.datetime.now())
     print("KRW시작금액 : 100,000")
     print("KRW보유량 : " + str(int(upbit.get_balance("KRW"))))
-    print("현재 수익률 : " + str(c) + "%")
+    get_reward()
     print("현재는 코인 거래가 발생하지 않았습니다.")
     print("거래하시는 코인이 모두 매수목표가격보다 아래입니다.")
     print("================================================")
@@ -160,6 +168,8 @@ while True:
 
         if upbit.get_balance("ETH") < 0.0015 and upbit.get_balance("BTC") < 0.00008:
             any_trade()
+        else:
+            get_reward()
 
         #Finished Part Of printing Information About Trade
 
@@ -252,4 +262,3 @@ while True:
     except Exception as e:
         print(e)
         time.sleep(1)
-
