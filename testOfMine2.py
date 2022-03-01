@@ -24,7 +24,7 @@ def get_sell_price(ticker):
 
     if start_time < now < start_time + datetime.timedelta(hours=6):
         plus_sell_price = target_price + (target_price * 0.01)
-        minus_sell_price = target_price + (target_price * 0.05)
+        minus_sell_price = target_price - (target_price * 0.05)
 
     else:
         plus_sell_price = target_price2 + (target_price2 * 0.005)
