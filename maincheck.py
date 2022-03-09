@@ -32,8 +32,8 @@ def main_check_price(ticker):
 매수 목표가 : {1}\n\
 최저가 : {2}\n\
 최고가 : {3}\n\
-현재가 : {4}\n\
-시작가 : {5}\n\
+시작가 : {4}\n\
+현재가 : {5}\n\
 변동률 : {6}\n\
 =====================\n\
 현재 시간 상황\n\
@@ -42,7 +42,7 @@ def main_check_price(ticker):
 시작 - 최고 : {9}\n\
 시작 - 최저 : {10}\n\
 시작 - 목표 : {11}\n\
-".format(now,target_price,low_price,high_price,current_price, open_price, rate_of_change\
+".format(now,target_price,low_price,high_price,open_price,current_price,rate_of_change\
     ,rate_of_now,percent,rate_of_high,rate_of_low,rate_of_goal), end="")
     return 0
 

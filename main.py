@@ -47,7 +47,7 @@ upbit = pyupbit.Upbit(access, secret)
 print("autotrade start")
 
 #recording
-# f = open("수익 기록.txt", "w",encoding="UTF8")
+f = open("수익 기록.txt", "w",encoding="UTF8")
 # check_point = False
 if get_balance("KRW") > 5000:
     check_point = False
