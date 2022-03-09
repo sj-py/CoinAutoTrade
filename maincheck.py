@@ -6,6 +6,8 @@ import winsound as sd
 
 access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
 secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
+# 로그인
+upbit = pyupbit.Upbit(access, secret)
 
 def main_check_price(ticker):
     #"""변동성 돌파 전략으로 매수 목표가 조회"""
@@ -18,6 +20,13 @@ def main_check_price(ticker):
     open_price = df.iloc[0]['open']
     #pre_rate_of_change = (round(df.iloc[0]['high']/df.iloc[0]['low'],3)-1)*100
     rate_of_change = round((df.iloc[0]['high']/df.iloc[0]['low']-1)*100,3)
+    avg = upbit.get_avg_buy_price("KRW-BTC")
+    sell = avg*1.002
+    percent = round(((current_price / sell)-1)*100,3)
+    rate_of_now = round(((current_price / avg)-1)*100,3)
+    rate_of_high = round(((df.iloc[0]['high'] / df.iloc[0]['open'])-1)*100,3)
+    rate_of_low = round(((df.iloc[0]['low'] / df.iloc[0]['open'])-1)*100,3)
+    rate_of_goal = round(((sell / df.iloc[0]['open'])-1)*100,3)
     print("\
 시간 : {0}\n\
 매수 목표가 : {1}\n\
@@ -26,7 +35,15 @@ def main_check_price(ticker):
 현재가 : {4}\n\
 시작가 : {5}\n\
 변동률 : {6}\n\
-".format(now,target_price,low_price,high_price,current_price, open_price, rate_of_change), end="")
+=====================\n\
+현재 시간 상황\n\
+현재 수익률 : {7}\n\
+목표 - 현재 : {8}\n\
+시작 - 최고 : {9}\n\
+시작 - 최저 : {10}\n\
+시작 - 목표 : {11}\n\
+".format(now,target_price,low_price,high_price,current_price, open_price, rate_of_change\
+    ,rate_of_now,percent,rate_of_high,rate_of_low,rate_of_goal), end="")
     return 0
 
 def beepsound():
@@ -36,8 +53,6 @@ def beepsound():
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
-print("autotrade start")
-ch = True
 while True:
         main_check_price("KRW-BTC")
         time.sleep(0.1)

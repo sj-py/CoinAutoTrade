@@ -66,7 +66,7 @@ while True:
         btc = get_balance("BTC")
         target_price = get_target_price("KRW-BTC")
         #시작 시간 30분뒤
-        if start_time + datetime.timedelta(minutes=1) < now and check_point == False: #< end_time - datetime.timedelta(seconds=10):
+        if start_time + datetime.timedelta(minutes=10) < now and check_point == False: #< end_time - datetime.timedelta(seconds=10):
             target_price = get_target_price("KRW-BTC")
             current_price = get_current_price("KRW-BTC")
             check_time = datetime.datetime.now()
