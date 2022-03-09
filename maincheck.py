@@ -21,7 +21,7 @@ def main_check_price(ticker):
     #pre_rate_of_change = (round(df.iloc[0]['high']/df.iloc[0]['low'],3)-1)*100
     rate_of_change = round((df.iloc[0]['high']/df.iloc[0]['low']-1)*100,3)
     avg = upbit.get_avg_buy_price("KRW-BTC")
-    sell = avg*1.002
+    sell = avg*1.0022
     percent = round(((current_price / sell)-1)*100,3)
     rate_of_now = round(((current_price / avg)-1)*100,3)
     rate_of_high = round(((df.iloc[0]['high'] / df.iloc[0]['open'])-1)*100,3)
