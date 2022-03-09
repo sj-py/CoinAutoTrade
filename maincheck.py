@@ -27,6 +27,9 @@ def main_check_price(ticker):
     rate_of_high = round(((df.iloc[0]['high'] / df.iloc[0]['open'])-1)*100,3)
     rate_of_low = round(((df.iloc[0]['low'] / df.iloc[0]['open'])-1)*100,3)
     rate_of_goal = round(((sell / df.iloc[0]['open'])-1)*100,3)
+    krw = int(upbit.get_balance("KRW"))
+    btc = upbit.get_balance("BTC")
+    reward = round(((krw / 100000)-1)*100,3)
     print("\
 시간 : {0}\n\
 매수 목표가 : {1}\n\
@@ -34,16 +37,19 @@ def main_check_price(ticker):
 최고가 : {3}\n\
 시작가 : {4}\n\
 현재가 : {5}\n\
-변동률 : {6}\n\
+변동률 : {6}%\n\
 =====================\n\
 현재 시간 상황\n\
-현재 수익률 : {7}\n\
-목표 - 현재 : {8}\n\
-시작 - 최고 : {9}\n\
-시작 - 최저 : {10}\n\
-시작 - 목표 : {11}\n\
+현재 수익률 : {7}%\n\
+목표 - 현재 : {8}%\n\
+시작 - 최고 : {9}%\n\
+시작 - 최저 : {10}%\n\
+시작 - 목표 : {11}%\n\
+원화 보유량 : {12}\n\
+BTC 보유량 : {13}\n\
+누적 수익률 : {14}%\n\
 ".format(now,target_price,low_price,high_price,open_price,current_price,rate_of_change\
-    ,rate_of_now,percent,rate_of_high,rate_of_low,rate_of_goal), end="")
+    ,rate_of_now,percent,rate_of_high,rate_of_low,rate_of_goal,krw,btc,reward), end="")
     return 0
 
 def beepsound():

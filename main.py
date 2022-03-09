@@ -78,7 +78,7 @@ while True:
             print("구매 시도 가격 : " + str(target_price))
             #f.write("구매 시도 가격 : " + str(target_price))
             #f.close()
-            print(check_point)
+            #print(check_point)
             if target_price > current_price:
                 if krw > 5000:
                     upbit.buy_market_order("KRW-BTC", krw*0.9995)#수수료 0.05%
