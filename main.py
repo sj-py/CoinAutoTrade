@@ -116,6 +116,8 @@ while True:
             print(now)
             f.write(str(now)+ "\n")
             beepsound()
+            beepsound()
+            beepsound()
             print("거래 재개")
             f.write("거래 재개"+ "\n")
         time.sleep(1)
