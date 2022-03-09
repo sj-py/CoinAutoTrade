@@ -1,59 +1,20 @@
 import time
 import pyupbit
 import datetime
+import winsound as sd
 
-access = "."
-secret = "."
+access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
+secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
 
-number_of_coins_to_trade = ["KRW-BTC", "KRW-ETH"]
-
-def get_target_price(ticker, k):#per day
+def get_target_price(ticker):
     #"""변동성 돌파 전략으로 매수 목표가 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="day", count=2)
-    target_price = df.iloc[1]['open'] + (df.iloc[0]['high'] - df.iloc[0]['low']) * k
+    df = pyupbit.get_ohlcv(ticker, interval="minute60", count=1)
+    target_price = df.iloc[0]['open']*0.997
     return target_price
-
-def get_target_price2(ticker, k):#per hour
-    #"""변동성 돌파 전략으로 매수 목표가 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="minute60", count=2)
-    target_price2 = df.iloc[1]['open'] + (df.iloc[1]['high'] - df.iloc[1]['low']) * k
-    return target_price2
-
-def get_buy_price(ticker):
-    if start_time < now < start_time + datetime.timedelta(hours=6):
-        wish_price = get_target_price(ticker, 0.6)
-        #print("dldl")
-    else: #start_time - datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
-        wish_price = get_target_price2(ticker, 0.2)
-        #print("qwqw")
-    a = ticker[4:]
-    print(a + " 매수 목표 가격 : " + str(wish_price))
-    return 0
-
-def get_sell_price(ticker):
-    target_price = get_target_price(ticker, 0.6)
-    target_price2 = get_target_price2(ticker, 0.2)
-    start_time = get_start_time(ticker)
-    now = datetime.datetime.now()
-    a = ticker[4:]
-
-    if start_time < now < start_time + datetime.timedelta(hours=6):
-        #print("qwqw")
-        plus_sell_price = target_price + (target_price * 0.01)
-        minus_sell_price = target_price - (target_price * 0.05)
-
-    else:
-        plus_sell_price = target_price2 + (target_price2 * 0.01)
-        minus_sell_price = target_price2 - (target_price2 * 0.008)
-
-    print(a + " 이익 목표치 : " + str(plus_sell_price))
-    print(a + " 손해 방어치 : " + str(minus_sell_price))
-    return 0
-
 
 def get_start_time(ticker):
     #"""시작 시간 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="day", count=1)
+    df = pyupbit.get_ohlcv(ticker, interval="minute60", count=1)
     start_time = df.index[0]
     return start_time
 
@@ -72,192 +33,99 @@ def get_current_price(ticker):
     #"""현재가 조회"""
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
-def get_reward():
-    a = 100000
-    b = int(upbit.get_balance("KRW"))
+def get_avg_buy_price(ticker):
+    #"""평균 구매가 조회"""
+    return upbit.get_avg_buy_price(ticker)
 
-    for i in number_of_coins_to_trade:
-        b += get_current_price(i) * upbit.get_balance(i)
-
-    c = round(((b - a) / a) * 100,3)
-    print("현재 수익률 : " + str(c) + "%")
-    print("==========================================")
-    return 0
-
-def any_trade():
-    print(datetime.datetime.now())
-    print("KRW시작금액 : 100,000")
-    print("KRW보유량 : " + str(int(upbit.get_balance("KRW"))))
-    get_reward()
-    print("현재는 코인 거래가 발생하지 않았습니다.")
-    print("거래하시는 코인이 모두 매수목표가격보다 아래입니다.")
-    print("================================================")
-    for i in number_of_coins_to_trade:
-        print(i + "의 현재 가격 : " + str(get_current_price(i)))
-        get_buy_price(i)
-        print("------------------------------------------------")
-    print("================================================")
-    return 0
-
-# def printpart_for_coins(ticker, coin):
-#     now = datetime.datetime.now()
-#     now_price = get_current_price(ticker)
-#     print("현재 거래코인은 " + coin + "입니다.")
-#     print("현재시각 : " + str(now))
-#     print(coin + "보유량 : " + str(upbit.get_balance(ticker)))   # KRW-BTC 조회
-#     print("KRW보유량 : " + str(int(upbit.get_balance("KRW"))))  # 보유 현금 조회
-#     print(coin + "에 할당된 KRW : " + str(int(get_balance("KRW"))))
-#     print("현재가격 : " + str(now_price))
-#     get_buy_price(ticker)
-#     get_sell_price(ticker)
-#     print("==========================================")
-#     return 0
+def beepsound():
+    fr = 2000    # range : 37 ~ 32767
+    du = 300     # 1000 ms ==1second
+    sd.Beep(fr, du) # winsound.Beep(frequency, duration)
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
-print("auto trade start")
+print("autotrade start")
 
+#recording
+# f = open("수익 기록.txt", "w",encoding="UTF8")
+# check_point = False
+if get_balance("KRW") > 5000:
+    check_point = False
+    check_time = datetime.datetime.now()
+elif get_balance("BTC") > 0.00008:
+    check_point = True
+    check_time = datetime.datetime.now()
 # 자동매매 시작
 while True:
     try:
-        #Part Of Time
-        #Common
         now = datetime.datetime.now()
-        #For BTC
         start_time = get_start_time("KRW-BTC")
-        end_time = start_time + datetime.timedelta(days=1)
-        now_price = get_current_price("KRW-BTC")
-        #For ETH
-        start_time = get_start_time("KRW-ETH")
-        end_time = start_time + datetime.timedelta(days=1)
-        now_price = get_current_price("KRW-ETH")
-        #Numbers Of Coins
-        coins = len(number_of_coins_to_trade) #number_of_coins_to_trade
+        end_time = start_time + datetime.timedelta(hours=1)
+        avg = get_avg_buy_price("KRW-BTC")
+        krw = get_balance("KRW")
+        btc = get_balance("BTC")
 
-        #Started Part Of printing Information About Trade
-
-        if upbit.get_balance("BTC") > 0.00008:
-        #Started Part Of Printing Information About BTC
-            now = datetime.datetime.now()
-            now_price = get_current_price("KRW-BTC")
-            print("현재 거래코인은 BTC 입니다.")
-            print("현재시각 : " + str(now))
-            print("BTC보유량 : " + str(upbit.get_balance("KRW-BTC")))   # KRW-BTC 조회
-            print("KRW보유량 : " + str(int(upbit.get_balance("KRW"))))  # 보유 현금 조회
-            print("BTC에 할당된 KRW : " + str(int(get_balance("KRW")/coins)))
-            print("현재가격 : " + str(now_price))
-            get_buy_price("KRW-BTC")
-            get_sell_price("KRW-BTC")
-            print("==========================================")
-        #Finished Part Of Printing Information About BTC
-
-        if upbit.get_balance("ETH") > 0.0015:
-        #Started Part Of Printing Information About ETH
-            now = datetime.datetime.now()
-            now_price = get_current_price("KRW-ETH")
-            print("현재 거래코인은 ETH 입니다.")
-            print("현재시각 : " + str(now))
-            print("ETH보유량 : " + str(upbit.get_balance("KRW-ETH")))   # KRW-BTC 조회
-            print("KRW보유량 : " + str(int(upbit.get_balance("KRW"))))  # 보유 현금 조회
-            print("ETH에 할당된 KRW : " + str(int(get_balance("KRW")/coins)))
-            print("현재가격 : " + str(now_price))
-            get_buy_price("KRW-ETH")
-            get_sell_price("KRW-ETH")
-            print("==========================================")
-        #Finished Part Of Printing Information About ETH
-
-        if upbit.get_balance("ETH") < 0.0015 and upbit.get_balance("BTC") < 0.00008:
-            any_trade()
-        else:
-            get_reward()
-
-        #Finished Part Of printing Information About Trade
-
-
-
-        #Started Part Of AutoTrading
-
-        #Started Part Of AutoTrading For BTC
-        #장 시작 직후
-        if start_time < now < start_time + datetime.timedelta(hours=6):
-            target_price = get_target_price("KRW-BTC", 0.6)
+        #시작 시간 30분뒤
+        if start_time + datetime.timedelta(minutes=1) < now and check_point == False: #< end_time - datetime.timedelta(seconds=10):
+            target_price = get_target_price("KRW-BTC")
             current_price = get_current_price("KRW-BTC")
-            if target_price < current_price:
-                krw = get_balance("KRW") / coins
+            check_time = datetime.datetime.now()
+            #f = open("수익 기록.txt", "a",encoding="UTF8")
+            print(now)
+            #f.write(str(now))
+            print("구매 시도 중")
+            #f.write("구매 시도 중")
+            print("구매 시도 가격 : " + str(target_price))
+            #f.write("구매 시도 가격 : " + str(target_price))
+            #f.close()
+            print(check_point)
+            if target_price > current_price:
                 if krw > 5000:
-                    upbit.buy_market_order("KRW-BTC", krw*0.9995)
-                    print("Buy : " + str(target_price))
-            if ((current_price-target_price)/target_price) >= 0.01 or ((current_price-target_price)/target_price) <= -0.05:
-                btc = get_balance("BTC")
-                if btc > 0.00008:
-                    print("Sell : " + str(current_price))
-                    upbit.sell_market_order("KRW-BTC", btc*0.9995)
-        #장 시작 6시간 후
-        elif start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
-            #
-            target_price2 = get_target_price2("KRW-BTC", 0.2)
-            current_price = get_current_price("KRW-BTC")
-            if target_price2 < current_price:
-                krw = get_balance("KRW") / coins
-                if krw > 5000:
-                    if current_price <= target_price2 + (target_price2*0.0002):
-                        upbit.buy_market_order("KRW-BTC", krw*0.9995)
-                        print("Buy : " + str(target_price2))
-            if ((current_price-target_price2)/target_price2) >= 0.01 or ((current_price-target_price2)/target_price2) <= -0.008:
-                
-                btc = get_balance("BTC")
-                if btc > 0.00008:
-                    print("Sell : " + str(current_price))
-                    upbit.sell_market_order("KRW-BTC", btc*0.9995) 
-
-        else:
+                    upbit.buy_market_order("KRW-BTC", krw*0.9995)#수수료 0.05%
+                    btc = get_balance("BTC")
+                if btc * current_price > 5000:
+                    check_point = True
+                    beepsound()
+                    f = open("수익 기록.txt", "a",encoding="UTF8")
+                    print(now)
+                    f.write(str(now)+ "\n")
+                    print("구매 완료")
+                    f.write("구매 완료"+ "\n")
+                    print(now)
+                    f.write(str(now)+ "\n")
+                    print("판매 시도 중")
+                    f.write("판매 시도 중"+ "\n")
+                    print("판매 시도 가격 : " + str(target_price * 1.002))
+                    f.write("판매 시도 가격 : " + str(target_price * 1.002)+ "\n")
+                    f.close()
+        elif check_point:
             btc = get_balance("BTC")
-            if btc > 0.00008:
-                upbit.sell_market_order("KRW-BTC", btc*0.9995)
+            current_price = get_current_price("KRW-BTC")
+            avg = get_avg_buy_price("KRW-BTC")
+            if btc > 0.00008 and avg * 1.0022 < current_price:
+                upbit.sell_market_order("KRW-BTC", btc * 0.9995)
+                f = open("수익 기록.txt", "a",encoding="UTF8")
+                print(now)
+                f.write(str(now)+"\n")
+                beepsound()
+                beepsound()
+                print("판매 완료")
+                f.write("판매 완료"+ "\n")
+                print(now)
+                f.write(str(now)+ "\n")
+                print("거래 대기 시간")
+                f.write("거래 대기 시간"+ "\n")
+                print(now.hour,check_time.hour)
+        if now.hour != check_time.hour and krw > 5000 and check_point:
+            check_point = False
+            print(now)
+            f.write(str(now)+ "\n")
+            beepsound()
+            print("거래 재개")
+            f.write("거래 재개"+ "\n")
         time.sleep(1)
-        #Finished Part of AutoTrading For BTC
-
-        #Started Part Of AutoTrading For ETH
-        #장 시작 직후
-        if start_time < now < start_time + datetime.timedelta(hours=6):
-            target_price = get_target_price("KRW-ETH", 0.6)
-            current_price = get_current_price("KRW-ETH")
-            if target_price < current_price:
-                krw = get_balance("KRW") / coins
-                if krw > 5000:
-                    upbit.buy_market_order("KRW-ETH", krw*0.9995)
-                    print("Buy : " + str(target_price))
-            if ((current_price-target_price)/target_price) >= 0.01 or ((current_price-target_price)/target_price) <= -0.05:
-                eth = get_balance("ETH")
-                if eth > 0.0015:
-                    print("Sell : " + str(current_price))
-                    upbit.sell_market_order("KRW-ETH", eth*0.9995)
-        #장 시작 6시간 후
-        elif start_time + datetime.timedelta(hours=6) < now < end_time - datetime.timedelta(seconds=10):
-            #
-            target_price2 = get_target_price2("KRW-ETH", 0.2)
-            current_price = get_current_price("KRW-ETH")
-            if target_price2 < current_price:
-                krw = get_balance("KRW") / coins
-                if krw > 5000:
-                    if current_price <= target_price2 + (target_price2*0.0002):
-                        upbit.buy_market_order("KRW-ETH", krw*0.9995)
-                        print("Buy : " + str(target_price2))
-            if ((current_price-target_price2)/target_price2) >= 0.01 or ((current_price-target_price2)/target_price2) <= -0.008:
-                
-                eth = get_balance("ETH")
-                if eth > 0.0015:
-                    print("Sell : " + str(current_price))
-                    upbit.sell_market_order("KRW-ETH", eth*0.9995) 
-
-        else:
-            eth = get_balance("ETH")
-            if eth > 0.00008:
-                upbit.sell_market_order("KRW-ETH", eth*0.9995)
-        time.sleep(1)
-        #Finished Part of AutoTrading For ETH
-
-        #Started Part Of AutoTrading
+        print(now.hour)
+        print(check_time.hour)
 
     except Exception as e:
         print(e)
