@@ -16,6 +16,8 @@ def main_check_price(ticker):
     high_price = df.iloc[0]['high']
     current_price = pyupbit.get_current_price("KRW-BTC")
     open_price = df.iloc[0]['open']
+    #pre_rate_of_change = (round(df.iloc[0]['high']/df.iloc[0]['low'],3)-1)*100
+    rate_of_change = round((df.iloc[0]['high']/df.iloc[0]['low']-1)*100,3)
     print("\
 시간 : {0}\n\
 매수 목표가 : {1}\n\
@@ -23,7 +25,8 @@ def main_check_price(ticker):
 최고가 : {3}\n\
 현재가 : {4}\n\
 시작가 : {5}\n\
-".format(now,target_price,low_price,high_price,current_price, open_price), end="")
+변동률 : {6}\n\
+".format(now,target_price,low_price,high_price,current_price, open_price, rate_of_change), end="")
     return 0
 
 def beepsound():

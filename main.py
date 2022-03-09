@@ -64,7 +64,7 @@ while True:
         avg = get_avg_buy_price("KRW-BTC")
         krw = get_balance("KRW")
         btc = get_balance("BTC")
-
+        target_price = get_target_price("KRW-BTC")
         #시작 시간 30분뒤
         if start_time + datetime.timedelta(minutes=1) < now and check_point == False: #< end_time - datetime.timedelta(seconds=10):
             target_price = get_target_price("KRW-BTC")
@@ -91,17 +91,25 @@ while True:
                     f.write(str(now)+ "\n")
                     print("구매 완료")
                     f.write("구매 완료"+ "\n")
-                    print(now)
-                    f.write(str(now)+ "\n")
-                    print("판매 시도 중")
-                    f.write("판매 시도 중"+ "\n")
-                    print("판매 시도 가격 : " + str(target_price * 1.002))
-                    f.write("판매 시도 가격 : " + str(target_price * 1.002)+ "\n")
+                    # print(now)
+                    # f.write(str(now)+ "\n")
+                    # print("판매 시도 중")
+                    # f.write("판매 시도 중"+ "\n")
+                    # print("판매 시도 가격 : " + str(target_price * 1.002))
+                    # f.write("판매 시도 가격 : " + str(target_price * 1.002)+ "\n")
                     f.close()
-        elif check_point:
+        elif check_point and btc > 0.00008:
             btc = get_balance("BTC")
             current_price = get_current_price("KRW-BTC")
             avg = get_avg_buy_price("KRW-BTC")
+            #f = open("수익 기록.txt", "a",encoding="UTF8")
+            print(now)
+            #f.write(str(now)+ "\n")
+            print("판매 시도 중")
+            #f.write("판매 시도 중"+ "\n")
+            print("판매 시도 가격 : " + str(avg * 1.002))
+            #f.write("판매 시도 가격 : " + str(avg * 1.002)+ "\n")
+            #f.close()
             if btc > 0.00008 and avg * 1.0022 < current_price:
                 upbit.sell_market_order("KRW-BTC", btc * 0.9995)
                 f = open("수익 기록.txt", "a",encoding="UTF8")
@@ -111,6 +119,10 @@ while True:
                 beepsound()
                 print("판매 완료")
                 f.write("판매 완료"+ "\n")
+                krw = get_balance("KRW")
+                reward = round(krw / 100000, 3)
+                print("수익률 : " + str(reward) + "%")
+                f.write("수익률 : " + str(reward) + "%" + "\n")
                 print(now)
                 f.write(str(now)+ "\n")
                 print("거래 대기 시간")
@@ -124,8 +136,6 @@ while True:
             print("거래 재개")
             f.write("거래 재개"+ "\n")
         time.sleep(1)
-        print(now.hour)
-        print(check_time.hour)
 
     except Exception as e:
         print(e)
