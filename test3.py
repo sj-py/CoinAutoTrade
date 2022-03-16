@@ -8,8 +8,8 @@ from PyQt5.QtGui import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
 import sys
-# access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
-# secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
+# access = "-"
+# secret = "-"
 # upbit = pyupbit.Upbit(access, secret)
 # a = 100000
 # b = int(upbit.get_balance("KRW"))

@@ -111,8 +111,8 @@ def beepsound():
     sd.Beep(fr, du) # winsound.Beep(frequency, duration)
 
 # 로그인
-access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
-secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
+access = "-"
+secret = "-"
 upbit = pyupbit.Upbit(access, secret)
 print("auto trade start",)
 number_of_coins_to_trade = ["KRW-BTC"]#, "KRW-ETH"]

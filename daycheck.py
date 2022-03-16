@@ -1,4 +1,3 @@
-from tabnanny import check
 import time
 import pyupbit
 import datetime
@@ -11,9 +10,9 @@ upbit = pyupbit.Upbit(access, secret)
 
 def main_check_price(ticker):
     #"""변동성 돌파 전략으로 매수 목표가 조회"""
-    df = pyupbit.get_ohlcv(ticker, interval="minute60", count=1)
+    df = pyupbit.get_ohlcv(ticker, interval="day", count=1)
     now = datetime.datetime.now()
-    target_price = df.iloc[0]['open']*0.997
+    target_price = df.iloc[0]['open']
     low_price = df.iloc[0]['low']
     high_price = df.iloc[0]['high']
     current_price = pyupbit.get_current_price("KRW-BTC")
@@ -21,7 +20,7 @@ def main_check_price(ticker):
     #pre_rate_of_change = (round(df.iloc[0]['high']/df.iloc[0]['low'],3)-1)*100
     rate_of_change = round((df.iloc[0]['high']/df.iloc[0]['low']-1)*100,3)
     avg = upbit.get_avg_buy_price("KRW-BTC")
-    sell = avg*1.0022
+    sell = avg*1.01
     percent = round(((current_price / sell)-1)*100,3)
     rate_of_now = round(((current_price / avg)-1)*100,3)
     rate_of_high = round(((df.iloc[0]['high'] / df.iloc[0]['open'])-1)*100,3)
@@ -61,4 +60,4 @@ def beepsound():
 upbit = pyupbit.Upbit(access, secret)
 while True:
         main_check_price("KRW-BTC")
-        time.sleep(0.1)
+        time.sleep(1)

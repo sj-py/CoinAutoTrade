@@ -2,8 +2,8 @@ import time
 import pyupbit
 import datetime
 
-access = "rrMenVhjvMRyD87qWjbQcRzDm7LL8DDdYyoB45sO"
-secret = "EkfxrlAYNBbxDUlwmhMCOmS4B0twHAzEVwk6nY5I"
+access = "-"
+secret = "-"
 
 number_of_coins_to_trade = ["KRW-BTC", "KRW-ETH"]
 
